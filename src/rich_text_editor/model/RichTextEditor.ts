@@ -422,7 +422,7 @@ export default class RichTextEditor {
       range.deleteContents();
 
       if (isString(value)) {
-        node.innerHTML = value;
+        node.innerText = value;
       } else if (value) {
         node.appendChild(value);
       }
