@@ -111,10 +111,14 @@ const defActions: Record<string, RichTextEditorAction> = {
       return rte?.selection() && isValidTag(rte, 'SPAN') ? btnState.DISABLED : btnState.INACTIVE;
     },
     result: rte => {
-      !isValidTag(rte, 'SPAN') &&
-        rte.insertHTML(`<span ${customElAttr}>${rte.selection()}</span>`, {
-          select: true,
-        });
+      if (!isValidTag(rte, 'SPAN')) {
+        const div = document.createElement('div');
+        div.innerHTML = `<span ${customElAttr}></span>`;
+        const span = div.firstChild as HTMLElement;
+        span.innerText = rte.selection()?.toString() ?? '';
+
+        rte.insertHTML(span, { select: true });
+      }
     },
   },
 };
@@ -422,7 +426,7 @@ export default class RichTextEditor {
       range.deleteContents();
 
       if (isString(value)) {
-        node.innerText = value;
+        node.innerHTML = value;
       } else if (value) {
         node.appendChild(value);
       }
